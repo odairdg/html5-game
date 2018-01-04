@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<style type="text/css">
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video{
+	margin:0;
+	padding:0;
+	border:0;
+	font-size:100%;
+	font:inherit;
+	vertical-align:baseline}
+	
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section{display:block}
+
+ol, ul{list-style:none}
+
+blockquote, q {quotes:none}
+
+blockquote:before, blockquote:after, q:before, q:after{
+	content:'';
+	content:none}
+	
+table{
+	border-collapse:collapse;
+	border-spacing:0}
+	
+body, html{
+	position:relative;
+	width:100%;
+	height:100%}
+	
+body{
+	line-height:1;
+	background:linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+	background-size:400% 400%;
+	-webkit-animation:Gradient 15s ease infinite;
+	-moz-animation:Gradient 15s ease infinite;
+	animation:Gradient 15s ease infinite}
+
+canvas{
+	width:100%;
+	height:100%;
+    background-image:url(cenario.png);
+	background-size:cover;
+	background-position:left}
+	
+#screen_play{
+	position:absolute;
+	height:480px;
+	width:270px;
+	top:50%;
+	margin-top:-240px;
+	left:50%;
+	margin-left:-135px;	
+	background-image:url(screen_play.png);
+	background-size:cover;
+	background-position:left}
+	
+#smartphone{
+	position:absolute;
+	height:600px;
+	width:281px;
+	top:50%;
+	margin-top:-300px;
+	left:50%;
+	margin-left:-140px}
+	
+.screen_win{
+	background-image:url(screen_win.png);
+	background-size:cover;
+	background-position:0;
+	background-repeat:no-repeat;
+	animation-play-state:paused}
+	
+.playing{
+	 animation:move 30s infinite;
+    -moz-animation:move 30s linear infinite;
+    -ms-animation:move 30s linear infinite;
+    -o-animation:move 30s linear infinite;
+    -webkit-animation:move 30s linear infinite}
+    
+.stop{animation-play-state:paused}
+	
+button{
+	position:absolute;
+	width:50%;
+	height:10%;
+	bottom:8%;
+	left:25%;
+	text-align:center;
+	text-transform:uppercase;
+	color:#fff;
+	border:1px solid #F63;
+	background-color:#F83;
+	box-shadow:0 2px 0 0 #F63;
+	outline:none;
+	cursor:pointer;
+	border-radius:5px}
+	
+button:active{
+	transform:scale(0.95)}
+	
+	
+@keyframes move{
+	0%{background-position:0}
+	100%{background-position:-2400px}
+}
+@-moz-keyframes move{
+	0%{background-position:0}
+	100%{background-position:-2400px}
+}
+@-ms-keyframes move{
+	0%{background-position:0}
+	100%{background-position:-2400px}
+}
+@-o-keyframes move{
+	0%{background-position:0}
+	100%{background-position:-2400px}
+}
+@-webkit-keyframes move{
+	0%{background-position:0}
+	100%{background-position:-2400px}
+}
+
+@-webkit-keyframes Gradient{
+	0%{background-position: 0% 50%}
+	50%{background-position: 100% 50%}
+	100%{background-position: 0% 50%}
+}
+
+@-moz-keyframes Gradient{
+	0%{background-position: 0% 50%}
+	50%{background-position: 100% 50%}
+	100%{background-position: 0% 50%}
+}
+
+@keyframes Gradient{
+	0%{background-position: 0% 50%}
+	50%{background-position: 100% 50%}
+	100%{background-position: 0% 50%}
+}
+
+@media only screen and (max-width:480px) and (orientation:landscape){
+	body{
+		-webkit-transform:rotate(-90deg);
+		-moz-transform:rotate(-90deg);
+		-o-transform:rotate(-90deg);
+		-ms-transform:rotate(-90deg);
+		transform:rotate(-90deg)}
+}
+
+@media screen and (max-width:480px){	
+	#screen_play{
+		position:relative;
+		height:100%!important;
+		width:100%!important;
+		top:0%;
+		margin-top:0;
+		left:0%;
+		margin-left:0}
+}
+</style>
+<script type="text/javascript">
+var isMobile = {
+	Android: function() {
+		return navigator.userAgent.match(/Android/i);
+	},
+	BlackBerry: function() {
+		return navigator.userAgent.match(/BlackBerry/i);
+	},
+	iOS: function() {
+		return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	},
+	Opera: function() {
+		return navigator.userAgent.match(/Opera Mini/i);
+	},
+	Windows: function() {
+		return navigator.userAgent.match(/IEMobile/i);
+	},
+	any: function() {
+		return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+	}
+};
+
+ww = window.innerWidth;
+wh = window.innerHeight;
+
+var myGamePiece;
+var myElements = [];
+var myObstacles = [];
+var myScore;
+var mySound;
+var myMusic;
+function startGame(){
+    myGamePiece = new component(77, 69, "kareca.png", 40, 120, "image");
+    myGamePiece.gravity = 0.05;
+    myScore = new component("18px", "Arial", "black", 20, 40, "text");
+	mySound = new sound("crash.mp3");
+    myWin = new sound("win.mp3");
+    myClick = new sound("click.mp3");
+	myMusic = new sound("theme.mp3");
+	myMusic.play();
+    myMusic.volume(0.1);
+    myWin.volume(0.2);
+    myGameArea.start();
+}
+var myGameArea ={
+    canvas : document.createElement("canvas"),
+    start : function(){
+		if(isMobile.any()){
+			this.canvas.width = ww;
+			this.canvas.height = wh;
+		}else{
+			this.canvas.width = 270;
+			this.canvas.height = 480;
+		}		
+		this.canvas.className = "playing";
+        this.context = this.canvas.getContext("2d");
+        document.getElementById("screen_play").insertBefore(this.canvas, document.getElementById("screen_play").childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 10);
+		//eventos touchscreen
+		window.addEventListener("touchstart", function(e){
+            accelerate(-0.2);
+        })
+        window.addEventListener("touchend", function(e){
+            accelerate(0.05);
+        })
+        //hidden play button
+        document.getElementById("play").style.display = "none";
+        //show jump button
+        var jump = document.createElement("button");
+        jump.id = "jump";
+        jump.innerHTML = "PULAR";
+        jump.setAttribute("onmousedown", "accelerate(-0.2)");
+        jump.setAttribute("onmouseup", "accelerate(0.05)");
+        jump.setAttribute("onclick", "myClick.play()");
+        document.getElementById("screen_play").insertBefore(jump, document.getElementById("screen_play").childNodes[1]);
+    },
+	stop : function(){
+        clearInterval(this.interval);
+		this.canvas.className += " stop";
+        //hidden play button
+        document.getElementById("jump").style.display = "none";
+        //show replay button
+        var replay = document.createElement("button");
+        replay.id = "replay";
+        replay.innerHTML = "JOGAR DE NOVO";
+        replay.addEventListener("click", function(){location.reload()}, false);
+        document.getElementById("screen_play").insertBefore(replay, document.getElementById("screen_play").childNodes[1]);
+    },
+    clear : function(){
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+function component(width, height, color, x, y, type){
+    this.type = type;
+    this.score = 0;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.x = x;
+    this.y = y;
+    this.gravity = 0.1;
+    this.gravitySpeed = 0;
+    //this.bounce = 0.6;
+	if (this.type == "image"){
+		this.image = new Image();
+		this.image.src = color;
+	}	
+    this.update = function(){
+        ctx = myGameArea.context;
+		if(this.type == "image"){
+				ctx.drawImage(this.image, 
+				this.x, 
+				this.y,
+				this.width, this.height);
+		}else if(this.type == "text"){
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else{
+			ctx.fillStyle = color;
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+		}		
+    }	
+    this.newPos = function(){
+        this.gravitySpeed += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+    }	
+    this.hitBottom = function(){
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > rockbottom){
+            this.y = rockbottom;
+			//this.gravitySpeed = -(this.gravitySpeed * this.bounce);
+        }
+    }	
+    this.crashWith = function(otherobj){
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)){
+            crash = false;
+        }
+        return crash;
+    }
+}
+function updateGameArea(){
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1){
+        if (myGamePiece.crashWith(myObstacles[i])){
+			mySound.play();
+			myMusic.stop();
+            myGameArea.stop();
+            return;
+        }
+    }  
+    myGameArea.clear();	
+    myGameArea.frameNo += 1;
+    if (myGameArea.frameNo == 1 || everyinterval(150)){
+        x = myGameArea.canvas.width;
+		y = myGameArea.canvas.height;
+        minHeight = 120;
+        maxHeight = 220;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 120;
+        maxGap = 220;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(30, height-15, "barra.png", x, 0, "image"));
+		myObstacles.push(new component(30, 30, "b.png", x, height-30, "image"));
+        myObstacles.push(new component(30, y - height - gap, "barra.png", x, height + gap+15, "image"));
+		myObstacles.push(new component(30, 30, "t.png", x, height + gap, "image"));
+    }
+	if(isMobile.any()){
+		myObstacles.push(new component(ww, 120, "base.png", 0, wh-120, "image"));
+		myObstacles.push(new component(ww, 1, "red", 0, -1));
+	}else{
+		myObstacles.push(new component(270, 120, "base.png", 0, 480-120, "image"));
+		myObstacles.push(new component(270, 1, "red", 0, -1));
+	}
+    for (i = 0; i < myObstacles.length; i += 1){
+        myObstacles[i].x += -1;
+        myObstacles[i].update();
+    }    
+    if (myGameArea.frameNo == 1 || everyinterval(600)) {
+        x = myGameArea.canvas.width;
+        myElements.push(new component(100, 100, "e_"+Math.floor(Math.random()*8+1)+".png", x, y-220, "image"));
+ 
+    }
+    for (i = 0; i < myElements.length; i += 1){
+        myElements[i].x += -1;
+        myElements[i].update();
+    }  
+    myScore.text = "PONTOS: " + myGameArea.frameNo;
+    myScore.update();
+    myGamePiece.newPos();
+    myGamePiece.update();    
+    //vencer o jogo
+    if(myScore.text.replace(/^\D+/g, '') == 2018){
+        myMusic.stop();
+		myGameArea.stop();
+		myGameArea.clear();
+		myGameArea.canvas.setAttribute("style", "background-image:url(screen_win.png);animation: none");
+		myWin.play();
+        return;
+    }
+}
+function sound(src){
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+    this.volume = function(n){
+        this.sound.volume = n;
+    }
+}
+function everyinterval(n){
+    if ((myGameArea.frameNo / n) % 1 == 0){return true;}
+    return false;
+}
+function accelerate(n){
+    myGamePiece.gravity = n;
+}
+</script>
+</head>
+<body>
+	<img id="smartphone" src="smartphone.png" alt="" />
+	<div id="screen_play">
+		<button id="play" onClick="startGame()">JOGAR</button>
+	<div>
+</body>
+</html>
