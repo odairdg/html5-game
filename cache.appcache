@@ -1,0 +1,32 @@
+CACHE MANIFEST
+# 2018-01-16:v1
+
+# Explicitly cached entries
+CACHE:
+index.html
+b.png
+t.png
+barra.png
+base.png
+cenario.png
+e_1.png
+e_2.png
+e_3.png
+e_4.png
+e_5.png
+e_6.png
+e_7.png
+e_8.png
+kareca.png
+smartphone.png
+screen_play.png
+screen_win.png
+crash.mp3
+theme.mp3
+win.mp3
+click.mp3
+
+
+# offline.html will be displayed if the user is offline
+FALLBACK:
+/ /offline.html
